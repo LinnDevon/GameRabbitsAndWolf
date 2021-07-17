@@ -53,4 +53,68 @@ class Animal extends Model
     {
         return $this->belongsTo(AnimalType::class);
     }
+
+    /**
+     * Сделать шаг вправо.
+     *
+     * @return bool
+     */
+    public function moveRight() : bool
+    {
+        if ($this->x < $this->game_field->width) {
+            $this->x++;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Сделать шаг влево.
+     *
+     * @return bool
+     */
+    public function moveLeft() : bool
+    {
+        if ($this->x > 0) {
+            $this->x--;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Сделать шаг вверх.
+     *
+     * @return bool
+     */
+    public function moveUp() : bool
+    {
+        if ($this->y < $this->game_field->height) {
+            $this->y++;
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Сделать шаг вниз.
+     *
+     * @return bool
+     */
+    public function moveDown() : bool
+    {
+        if ($this->y > 0) {
+            $this->y--;
+
+            return true;
+        }
+
+        return false;
+    }
 }
