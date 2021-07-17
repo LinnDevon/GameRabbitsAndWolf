@@ -5,6 +5,7 @@ namespace App\Models;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Arr;
 
 /**
  * Класс модели существующего животного.
@@ -52,6 +53,45 @@ class Animal extends Model
     public function animal_type() : BelongsTo
     {
         return $this->belongsTo(AnimalType::class);
+    }
+
+    /**
+     * Сделать рандомный шаг.
+     *
+     * @throws Exception В случае, если походить не удалось.
+     */
+    public function moveRandomStep()
+    {
+        foreach (Arr::shuffle([0, 1, 2, 3]) as $number) {
+            switch ($number) {
+                case 0:
+                    if ($this->moveRight()) {
+                        return;
+                    }
+
+                    break;
+                case 1:
+                    if ($this->moveLeft()) {
+                        return;
+                    }
+
+                    break;
+                case 2:
+                    if ($this->moveDown()) {
+                        return;
+                    }
+
+                    break;
+                case 3:
+                    if ($this->moveUp()) {
+                        return;
+                    }
+
+                    break;
+            }
+        }
+
+        throw new Exception('На этом поле не разгуляться.');
     }
 
     /**
