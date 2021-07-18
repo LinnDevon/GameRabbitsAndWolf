@@ -5,21 +5,23 @@ namespace App\Models;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Arr;
 
 /**
- * Класс модели существующего животного.
+ * Класс модели существующего объекта игрового поля.
  *
- * @property int             id            Идентификатор существующего животного.
- * @property int             x             Координата x существующего животного.
- * @property int             y             Координата y существующего животного.
- * @property int             type_id       Идентификатор типа животного.
+ * @property int             id            Идентификатор существующего объекта игрового поля.
+ * @property int             x             Координата x существующего объекта игрового поля.
+ * @property int             y             Координата y существующего объекта игрового поля.
+ * @property int             type_id       Идентификатор типа объекта игрового поля.
  * @property int             game_field_id Идентификатор игрового поля.
  *
  * @property-read GameField  game_field
- * @property-read AnimalType animal_type
+ * @property-read ObjectType object_type
+ * @property-read Wolf       wolf
  */
-class Animal extends Model
+class GameFieldObject extends Model
 {
     /**
      * Атрибуты, для которых разрешено массовое присвоение значений.
@@ -46,13 +48,23 @@ class Animal extends Model
     }
 
     /**
-     * Получить тип животного.
+     * Получить тип объекта игрового поля.
      *
      * @return BelongsTo
      */
-    public function animal_type() : BelongsTo
+    public function object_type() : BelongsTo
     {
-        return $this->belongsTo(AnimalType::class);
+        return $this->belongsTo(ObjectType::class);
+    }
+
+    /**
+     * Получить волка.
+     *
+     * @return HasOne
+     */
+    public function wolf() : HasOne
+    {
+        return $this->hasOne(Wolf::class);
     }
 
     /**
@@ -159,10 +171,10 @@ class Animal extends Model
     }
 
     /**
-     * Проверяет, сидят ли животные на соседних клетках.
+     * Проверяет, сидят ли объекты игрового поля на соседних клетках.
      *
-     * @param int $x Координата x второго животного.
-     * @param int $y Координата y второго животного.
+     * @param int $x Координата x второго объекта игрового поля.
+     * @param int $y Координата y второго объекта игрового поля.
      *
      * @return bool
      */
@@ -172,10 +184,10 @@ class Animal extends Model
     }
 
     /**
-     * Проверяет, сидят ли животные на одной и той же клетке.
+     * Проверяет, сидят ли объекты игрового поля на одной и той же клетке.
      *
-     * @param int $x Координата x второго животного.
-     * @param int $y Координата y второго животного.
+     * @param int $x Координата x второго объекта игрового поля.
+     * @param int $y Координата y второго объекта игрового поля.
      *
      * @return bool
      */

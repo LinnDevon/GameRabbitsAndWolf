@@ -9,12 +9,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 /**
  * Класс модели игрового поля.
  *
- * @property int id          Идентификатор игрового поля.
- * @property int height      Длина игрового поля.
- * @property int width       Ширина игрового поля.
- * @property int count_steps Количество оставшихся шагов.
+ * @property int                    id          Идентификатор игрового поля.
+ * @property int                    height      Длина игрового поля.
+ * @property int                    width       Ширина игрового поля.
+ * @property int                    count_steps Количество оставшихся шагов.
  *
- * @property-read Animal[] animals
+ * @property-read GameFieldObject[] objects
  */
 class GameField extends Model
 {
@@ -33,13 +33,13 @@ class GameField extends Model
     public $timestamps = false;
 
     /**
-     * Получить животных для игрового поля.
+     * Получить объекты игрового поля.
      *
      * @return HasMany
      */
-    public function animals() : HasMany
+    public function objects() : HasMany
     {
-        return $this->hasMany(Animal::class);
+        return $this->hasMany(GameFieldObject::class);
     }
 
     /**

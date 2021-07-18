@@ -3,58 +3,58 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Services\AnimalService;
+use App\Services\GameFieldObjectService;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 /**
- * Класс контроллера животных.
+ * Класс контроллера объектов игрового поля.
  */
-class AnimalController extends Controller
+class GameFieldObjectController extends Controller
 {
     /**
-     * Метод создания новой игры.
+     * Метод создания объекта игрового поля.
      *
      * @param Request $request Данные запроса.
      * @param int     $fieldId Игровое поле.
      *
      * @throws Exception
      */
-    public function createAnimal(Request $request, int $fieldId)
+    public function createObject(Request $request, int $fieldId)
     {
         $data                  = $request->all();
         $data['game_field_id'] = $fieldId;
 
-        AnimalService::createAnimal($data);
+        GameFieldObjectService::createObject($data);
     }
 
     /**
-     * Метод создания новой игры.
+     * Метод создания объектов игрового поля с рандомными координатами.
      *
      * @param Request $request Данные запроса.
      * @param int     $fieldId Игровое поле.
      *
      * @throws Exception
      */
-    public function createAnimalsWithRandomCoordinates(Request $request, int $fieldId)
+    public function createObjectsWithRandomCoordinates(Request $request, int $fieldId)
     {
         $data                  = $request->all();
         $data['game_field_id'] = $fieldId;
 
-        AnimalService::createAnimalsWithRandomCoordinates($data);
+        GameFieldObjectService::createObjectsWithRandomCoordinates($data);
     }
 
     /**
-     * Метод получения списка всех существующих животных на игровом поле.
+     * Метод получения списка всех объектов игрового поля.
      *
      * @param Request $request Данные запроса.
      * @param int     $fieldId Игровое поле.
      *
      * @return Collection
      */
-    public function getAnimalList(Request $request, int $fieldId) : Collection
+    public function getObjectList(Request $request, int $fieldId) : Collection
     {
-        return AnimalService::getAnimalList($fieldId);
+        return GameFieldObjectService::getObjectList($fieldId);
     }
 }

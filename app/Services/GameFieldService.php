@@ -2,8 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Animal;
-use App\Models\AnimalType;
+use App\Models\GameFieldObject;
+use App\Models\ObjectType;
 use App\Models\GameField;
 use Exception;
 use Illuminate\Support\Collection;
@@ -43,25 +43,25 @@ class GameFieldService
             throw new Exception('Больше ходов не осталось. Игра завершена.');
         }
 
-        /** @var Collection|Animal[] $animals */
-        $animals = $gameField->animals;
-        DB::transaction(function () use ($animals) {
-            foreach ($animals as $animal) {
-                $animal->moveRandomStep();
-                $animal->save();
+        /** @var Collection|GameFieldObject[] $objects */
+        $objects = $gameField->objects;
+        DB::transaction(function () use ($objects, $gameField) {
+            foreach ($objects as $object) {
+                $object->moveRandomStep();
+                $object->save();
             }
 
-            /** @var Collection|Animal[] $wolfs */
-            $wolfs = $animals->where('type_id', AnimalType::TYPE_WOLF_ID);
-            /** @var Collection|Animal[] $rabbits */
-            $rabbits = $animals->where('type_id', AnimalType::TYPE_RABBIT_ID);
+            /** @var Collection|GameFieldObject[] $wolfs */
+            $wolfs = $objects->where('type_id', ObjectType::TYPE_WOLF_ID);
+            /** @var Collection|GameFieldObject[] $rabbits */
+            $rabbits = $objects->where('type_id', ObjectType::TYPE_RABBIT_ID);
 
-            $deadAnimalIds = [];
+            $deadObjectIds = [];
             foreach ($wolfs as $wolf) {
                 $neighborIds = [];
                 foreach ($rabbits as $rabbit) {
                     if ($rabbit->isThisCell($wolf->x, $wolf->y)) {
-                        $deadAnimalIds[] = $rabbit->id;
+                        $deadObjectIds[] = $rabbit->id;
                     }
 
                     if ($rabbit->isNeighboringCell($wolf->x, $wolf->y)) {
@@ -70,11 +70,13 @@ class GameFieldService
                 }
 
                 if (count($neighborIds) === 1) {
-                    $deadAnimalIds = array_merge($deadAnimalIds, $neighborIds);
+                    $deadObjectIds = array_merge($deadObjectIds, $neighborIds);
                 }
             }
 
-            Animal::destroy($deadAnimalIds);
+            GameFieldObject::destroy($deadObjectIds);
+            $gameField->count_steps--;
+            $gameField->save();
         });
     }
 }

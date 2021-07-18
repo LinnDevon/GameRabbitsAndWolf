@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Services\AnimalService;
+use App\Services\GameFieldObjectService;
 use App\Services\GameFieldService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
