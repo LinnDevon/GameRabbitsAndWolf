@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\GameFieldObject;
 use App\Models\ObjectType;
 use App\Models\GameField;
-use App\Models\Wolf;
 use App\Repositories\GameFieldObjectRepository;
 use Exception;
 use Illuminate\Support\Collection;
@@ -54,6 +53,7 @@ class GameFieldService
             }
 
             $deadObjectIds = self::getDeadObjects($gameField);
+            self::multiplyObjects($objects, $gameField);
             GameFieldObject::destroy($deadObjectIds);
             $gameField->count_steps--;
             $gameField->save();
@@ -70,7 +70,7 @@ class GameFieldService
     protected static function getDeadObjects(GameField $gameField) : array
     {
         /** @var Collection|GameFieldObject[] $objects */
-        $objects       = $gameField->objects;
+        $objects = $gameField->objects;
         /** @var Collection|GameFieldObject[] $wolfObjects */
         $wolfObjects = $objects->where('type_id', ObjectType::TYPE_WOLF_ID);
         /** @var Collection|GameFieldObject[] $rabbitObjects */
@@ -99,9 +99,54 @@ class GameFieldService
         }
 
         if ($gameField->isLastStep()) {
-            $deadObjectIds = array_merge($deadObjectIds, GameFieldObjectRepository::getHungryWolfIds($gameField->id)->pluck('id')->toArray());
+            $deadObjectIds = array_merge($deadObjectIds,
+                GameFieldObjectRepository::getHungryWolfIds($gameField->id)->pluck('id')->toArray());
         }
 
         return $deadObjectIds;
+    }
+
+    /**
+     * Метод размножения объектов игрового поля.
+     *
+     * @param Collection|GameFieldObject[] $gameFieldObjects Объекты игрового поля.
+     * @param GameField                    $gameField        Игровое поле.
+     */
+    protected static function multiplyObjects(Collection $gameFieldObjects, GameField $gameField)
+    {
+        /** @var Collection|GameFieldObject[] $rabbitObjects */
+        $rabbitObjects = $gameFieldObjects->where('type_id', ObjectType::TYPE_RABBIT_ID)->sortBy(['x', 'y']);
+
+        $prev       = null;
+        $toMultiply = [];
+        foreach ($rabbitObjects as $keyObject => $rabbitObject) {
+            if (empty($prev)) {
+                $prev = $rabbitObject;
+                continue;
+            }
+
+            if ($rabbitObject->isThisCell($prev->x, $prev->y)) {
+                $toMultiply[] = $rabbitObject;
+            }
+
+            $prev = $rabbitObject;
+        }
+
+        $data = [
+            'type_id'       => ObjectType::TYPE_RABBIT_ID,
+            'game_field_id' => $gameField->id,
+        ];
+
+        $toMultiply = array_unique($toMultiply);
+        /** @var GameFieldObject $item */
+        foreach ($toMultiply as $item) {
+            $coordinates = $item->getDiagonalCoordinates();
+            foreach ($coordinates as $coordinate) {
+                $data['x'] = $coordinate['x'];
+                $data['y'] = $coordinate['y'];
+
+                GameFieldObjectService::createObject($data);
+            }
+        }
     }
 }

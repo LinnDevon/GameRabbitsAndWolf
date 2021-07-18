@@ -195,4 +195,31 @@ class GameFieldObject extends Model
     {
         return abs($this->x - $x) + abs($this->y - $y) === 0;
     }
+
+    /**
+     * Метод выдачи координат диагональных клеток.
+     *
+     * @return array
+     */
+    public function getDiagonalCoordinates() : array
+    {
+        return [
+            [
+                'x' => $this->x + 1,
+                'y' => $this->y + 1,
+            ],
+            [
+                'x' => $this->x - 1,
+                'y' => $this->y + 1,
+            ],
+            [
+                'x' => $this->x + 1,
+                'y' => $this->y - 1,
+            ],
+            [
+                'x' => $this->x - 1,
+                'y' => $this->y - 1,
+            ],
+        ];
+    }
 }

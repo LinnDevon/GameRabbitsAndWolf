@@ -22,12 +22,24 @@ class GameFieldObjectService
      */
     public static function createObject(array $data)
     {
+        /** @var GameField $field */
+        $field = GameField::find($data['game_field_id']);
+        if ($data['x'] < 0 || $data['x'] > $field->width) {
+            return;
+        }
+
+        if ($data['y'] < 0 || $data['y'] > $field->height) {
+            return;
+        }
+
         $object = new GameFieldObject();
         DB::transaction(function () use ($object, $data) {
-            /** @var ObjectType $objectType */
-            $objectType      = ObjectType::query()->where(['name' => $data['type']])->first();
-            $data['type_id'] = $objectType->id;
-            unset($data['type']);
+            if (isset($data['type'])) {
+                /** @var ObjectType $objectType */
+                $objectType      = ObjectType::query()->where(['name' => $data['type']])->first();
+                $data['type_id'] = $objectType->id;
+                unset($data['type']);
+            }
 
             $object->fill($data);
             $object->save();
