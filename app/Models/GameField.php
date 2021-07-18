@@ -65,4 +65,14 @@ class GameField extends Model
     {
         return random_int(0, $this->height);
     }
+
+    /**
+     * Метод проверки того, что этот ход последний.
+     *
+     * @return bool
+     */
+    public function isLastStep() : bool
+    {
+        return $this->count_steps === 1;
+    }
 }

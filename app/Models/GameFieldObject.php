@@ -64,7 +64,7 @@ class GameFieldObject extends Model
      */
     public function wolf() : HasOne
     {
-        return $this->hasOne(Wolf::class);
+        return $this->hasOne(Wolf::class, 'object_id', 'id');
     }
 
     /**

@@ -21,7 +21,7 @@ class CreateWolvesTable extends Migration
             $table->unsignedInteger('object_id')->comment('Идентификатор объекта на игровом поле');
             $table->tinyInteger('is_hungry')->default(1)->comment('Голоден ли волк?');
 
-            $table->foreign('object_id')->references('id')->on('game_field_objects');
+            $table->foreign('object_id')->references('id')->on('game_field_objects')->onDelete('cascade');
         });
 
         DB::select(DB::raw("COMMENT ON TABLE wolves IS 'Таблица волков'"));

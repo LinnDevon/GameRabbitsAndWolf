@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\GameFieldObject;
 use App\Models\ObjectType;
 use App\Models\GameField;
+use App\Models\Wolf;
+use App\Repositories\GameFieldObjectRepository;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -51,32 +53,55 @@ class GameFieldService
                 $object->save();
             }
 
-            /** @var Collection|GameFieldObject[] $wolfs */
-            $wolfs = $objects->where('type_id', ObjectType::TYPE_WOLF_ID);
-            /** @var Collection|GameFieldObject[] $rabbits */
-            $rabbits = $objects->where('type_id', ObjectType::TYPE_RABBIT_ID);
-
-            $deadObjectIds = [];
-            foreach ($wolfs as $wolf) {
-                $neighborIds = [];
-                foreach ($rabbits as $rabbit) {
-                    if ($rabbit->isThisCell($wolf->x, $wolf->y)) {
-                        $deadObjectIds[] = $rabbit->id;
-                    }
-
-                    if ($rabbit->isNeighboringCell($wolf->x, $wolf->y)) {
-                        $neighborIds[] = $rabbit->id;
-                    }
-                }
-
-                if (count($neighborIds) === 1) {
-                    $deadObjectIds = array_merge($deadObjectIds, $neighborIds);
-                }
-            }
-
+            $deadObjectIds = self::getDeadObjects($gameField);
             GameFieldObject::destroy($deadObjectIds);
             $gameField->count_steps--;
             $gameField->save();
         });
+    }
+
+    /**
+     * Метод получения объектов на игровом поле, который умрут на текущем шаге.
+     *
+     * @param GameField $gameField Игровое поле.
+     *
+     * @return array
+     */
+    protected static function getDeadObjects(GameField $gameField) : array
+    {
+        /** @var Collection|GameFieldObject[] $objects */
+        $objects       = $gameField->objects;
+        /** @var Collection|GameFieldObject[] $wolfObjects */
+        $wolfObjects = $objects->where('type_id', ObjectType::TYPE_WOLF_ID);
+        /** @var Collection|GameFieldObject[] $rabbitObjects */
+        $rabbitObjects = $objects->where('type_id', ObjectType::TYPE_RABBIT_ID);
+
+        $deadObjectIds = [];
+        foreach ($wolfObjects as $wolfObject) {
+            $neighborIds = [];
+            foreach ($rabbitObjects as $rabbitObject) {
+                if ($rabbitObject->isThisCell($wolfObject->x, $wolfObject->y)) {
+                    $deadObjectIds[]             = $rabbitObject->id;
+                    $wolfObject->wolf->is_hungry = 0;
+                    $wolfObject->wolf->save();
+                }
+
+                if ($rabbitObject->isNeighboringCell($wolfObject->x, $wolfObject->y)) {
+                    $neighborIds[] = $rabbitObject->id;
+                }
+            }
+
+            if (count($neighborIds) === 1) {
+                $deadObjectIds               = array_merge($deadObjectIds, $neighborIds);
+                $wolfObject->wolf->is_hungry = 0;
+                $wolfObject->wolf->save();
+            }
+        }
+
+        if ($gameField->isLastStep()) {
+            $deadObjectIds = array_merge($deadObjectIds, GameFieldObjectRepository::getHungryWolfIds($gameField->id)->pluck('id')->toArray());
+        }
+
+        return $deadObjectIds;
     }
 }

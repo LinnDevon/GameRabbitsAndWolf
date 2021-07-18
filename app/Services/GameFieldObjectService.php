@@ -31,6 +31,9 @@ class GameFieldObjectService
 
             $object->fill($data);
             $object->save();
+            if ($data['type_id'] === ObjectType::TYPE_WOLF_ID) {
+                $object->wolf()->create();
+            }
         });
     }
 
@@ -54,7 +57,7 @@ class GameFieldObjectService
             $itemData['x'] = $gameField->getRandomX();
             $itemData['y'] = $gameField->getRandomY();
 
-            GameFieldObjectService::createObject($itemData);
+            self::createObject($itemData);
         }
     }
 

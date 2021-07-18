@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * Класс модели волков.
@@ -17,12 +17,26 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Wolf extends Model
 {
     /**
+     * Атрибуты, для которых разрешено массовое присвоение значений.
+     *
+     * @var array
+     */
+    protected $fillable = ['object_id', 'is_hungry'];
+
+    /**
+     * Следует ли обрабатывать временные метки модели.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
      * Получить объект игрового поля.
      *
-     * @return HasOne
+     * @return BelongsTo
      */
-    public function object() : HasOne
+    public function object() : BelongsTo
     {
-        return $this->hasOne(GameFieldObject::class);
+        return $this->belongsTo(GameFieldObject::class);
     }
 }
