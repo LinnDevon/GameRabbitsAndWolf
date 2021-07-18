@@ -5,16 +5,18 @@ namespace App\Models;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
 /**
  * Класс модели игрового поля.
  *
- * @property int id          Идентификатор игрового поля.
- * @property int height      Длина игрового поля.
- * @property int width       Ширина игрового поля.
- * @property int count_steps Количество оставшихся шагов.
+ * @property int                      id          Идентификатор игрового поля.
+ * @property int                      height      Длина игрового поля.
+ * @property int                      width       Ширина игрового поля.
+ * @property int                      count_steps Количество оставшихся шагов.
  *
- * @property-read Animal[] animals
+ * @property-read Collection|Rabbit[] rabbits
+ * @property-read Collection|Wolf[]   wolves
  */
 class GameField extends Model
 {
@@ -33,13 +35,23 @@ class GameField extends Model
     public $timestamps = false;
 
     /**
-     * Получить животных для игрового поля.
+     * Получить зайцев для игрового поля.
      *
      * @return HasMany
      */
-    public function animals() : HasMany
+    public function rabbits() : HasMany
     {
-        return $this->hasMany(Animal::class);
+        return $this->hasMany(Rabbit::class);
+    }
+
+    /**
+     * Получить волков для игрового поля.
+     *
+     * @return HasMany
+     */
+    public function wolves() : HasMany
+    {
+        return $this->hasMany(Wolf::class);
     }
 
     /**

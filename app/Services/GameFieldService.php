@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\Animal;
 use App\Models\AnimalType;
 use App\Models\GameField;
+use App\Models\Rabbit;
+use App\Models\Wolf;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -43,21 +45,21 @@ class GameFieldService
             throw new Exception('Больше ходов не осталось. Игра завершена.');
         }
 
-        /** @var Collection|Animal[] $animals */
-        $animals = $gameField->animals;
-        DB::transaction(function () use ($animals) {
-            foreach ($animals as $animal) {
-                $animal->moveRandomStep();
-                $animal->save();
+        /** @var Collection|Wolf[] $wolves */
+        $wolves = $gameField->wolves;
+        /** @var Collection|Rabbit[] $rabbits */
+        $rabbits = $gameField->rabbits;
+
+        DB::transaction(function () use ($wolves, $rabbits) {
+            foreach ($wolves as $wolf) {
+                $wolf->moveRandomStep();
+            }
+            foreach ($rabbits as $rabbit) {
+                $rabbit->moveRandomStep();
             }
 
-            /** @var Collection|Animal[] $wolfs */
-            $wolfs = $animals->where('type_id', AnimalType::TYPE_WOLF_ID);
-            /** @var Collection|Animal[] $rabbits */
-            $rabbits = $animals->where('type_id', AnimalType::TYPE_RABBIT_ID);
-
             $deadAnimalIds = [];
-            foreach ($wolfs as $wolf) {
+            foreach ($wolves as $wolf) {
                 $neighborIds = [];
                 foreach ($rabbits as $rabbit) {
                     if ($rabbit->isThisCell($wolf->x, $wolf->y)) {
@@ -74,7 +76,7 @@ class GameFieldService
                 }
             }
 
-            Animal::destroy($deadAnimalIds);
+            Rabbit::destroy($deadAnimalIds);
         });
     }
 }

@@ -5,9 +5,9 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 /**
- * Миграция по созданию таблицы существующих животных.
+ * Миграция по созданию таблицы существующих зайцев.
  */
-class CreateAnimalsTable extends Migration
+class CreateRabbitsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -16,18 +16,16 @@ class CreateAnimalsTable extends Migration
      */
     public function up()
     {
-        Schema::create('animals', function (Blueprint $table) {
+        Schema::create('rabbits', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('x')->comment('Координата x');
             $table->unsignedInteger('y')->comment('Координата y');
-            $table->unsignedInteger('type_id')->comment('Идентификатор типа животного');
             $table->unsignedInteger('game_field_id')->comment('Идентификатор игрового поля');
 
-            $table->foreign('type_id')->references('id')->on('animal_types');
             $table->foreign('game_field_id')->references('id')->on('game_fields');
         });
 
-        DB::select(DB::raw("COMMENT ON TABLE animals IS 'Таблица существующих животных'"));
+        DB::select(DB::raw("COMMENT ON TABLE rabbits IS 'Таблица существующих зайцев'"));
     }
 
     /**
@@ -37,6 +35,6 @@ class CreateAnimalsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('animals');
+        Schema::dropIfExists('rabbits');
     }
 }
