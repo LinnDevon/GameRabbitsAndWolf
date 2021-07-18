@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateGameRequest;
+use App\Http\Requests\NextStepRequest;
 use App\Services\GameFieldObjectService;
 use App\Services\GameFieldService;
 use Exception;
@@ -28,12 +29,12 @@ class GameFieldController extends Controller
     /**
      * Метод выполнения следующего шага на игровом поле.
      *
-     * @param Request $request Данные запроса.
-     * @param int     $fieldId Игровое поле.
+     * @param NextStepRequest $request Данные запроса.
+     * @param int             $fieldId Игровое поле.
      *
      * @throws Exception
      */
-    public function executeNextStep(Request $request, int $fieldId)
+    public function executeNextStep(NextStepRequest $request, int $fieldId)
     {
         GameFieldService::executeNextStep($fieldId);
     }

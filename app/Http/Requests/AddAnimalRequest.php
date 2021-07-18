@@ -25,7 +25,10 @@ class AddAnimalRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        /** @var GameField $field */
+        $field = GameField::find($this->route()->parameter('field_id'));
+
+        return isset($field);
     }
 
     /**

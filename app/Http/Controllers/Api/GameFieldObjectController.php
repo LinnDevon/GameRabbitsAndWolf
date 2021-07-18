@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AddAnimalRequest;
+use App\Http\Requests\AddAnimalsWithRandomCoordinatesRequest;
+use App\Http\Requests\GetAnimalsRequest;
 use App\Services\GameFieldObjectService;
 use Exception;
 use Illuminate\Http\Request;
@@ -33,12 +35,12 @@ class GameFieldObjectController extends Controller
     /**
      * Метод создания объектов игрового поля с рандомными координатами.
      *
-     * @param Request $request Данные запроса.
-     * @param int     $fieldId Игровое поле.
+     * @param AddAnimalsWithRandomCoordinatesRequest $request Данные запроса.
+     * @param int                                    $fieldId Игровое поле.
      *
      * @throws Exception
      */
-    public function createObjectsWithRandomCoordinates(Request $request, int $fieldId)
+    public function createObjectsWithRandomCoordinates(AddAnimalsWithRandomCoordinatesRequest $request, int $fieldId)
     {
         $data                  = $request->all();
         $data['game_field_id'] = $fieldId;
@@ -49,12 +51,12 @@ class GameFieldObjectController extends Controller
     /**
      * Метод получения списка всех объектов игрового поля.
      *
-     * @param Request $request Данные запроса.
-     * @param int     $fieldId Игровое поле.
+     * @param GetAnimalsRequest $request Данные запроса.
+     * @param int               $fieldId Игровое поле.
      *
      * @return Collection
      */
-    public function getObjectList(Request $request, int $fieldId) : Collection
+    public function getObjectList(GetAnimalsRequest $request, int $fieldId) : Collection
     {
         return GameFieldObjectService::getObjectList($fieldId);
     }
