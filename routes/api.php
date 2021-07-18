@@ -4,10 +4,6 @@ use App\Http\Controllers\Api\GameFieldObjectController;
 use App\Http\Controllers\Api\GameFieldController;
 use Illuminate\Support\Facades\Route;
 
-//Route::middleware('auth:api')->get('/user', function (Request $request) {
-//    return $request->user();
-//});
-
 // Начать новую игру
 //  curl -X 'POST' -d height=3 -d width=31 -d count_steps=3 http://127.0.0.1:8000/api/start_game
 Route::post('start_game', [GameFieldController::class, 'createGameField']);

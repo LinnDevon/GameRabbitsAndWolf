@@ -8,7 +8,6 @@ use App\Http\Requests\AddAnimalsWithRandomCoordinatesRequest;
 use App\Http\Requests\GetAnimalsRequest;
 use App\Services\GameFieldObjectService;
 use Exception;
-use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
 /**
@@ -20,7 +19,7 @@ class GameFieldObjectController extends Controller
      * Метод создания объекта игрового поля.
      *
      * @param AddAnimalRequest $request Данные запроса.
-     * @param int              $fieldId Игровое поле.
+     * @param int              $fieldId Идентификатор игрового поля.
      *
      * @throws Exception
      */
@@ -36,7 +35,7 @@ class GameFieldObjectController extends Controller
      * Метод создания объектов игрового поля с рандомными координатами.
      *
      * @param AddAnimalsWithRandomCoordinatesRequest $request Данные запроса.
-     * @param int                                    $fieldId Игровое поле.
+     * @param int                                    $fieldId Идентификатор игрового поля.
      *
      * @throws Exception
      */
@@ -52,7 +51,7 @@ class GameFieldObjectController extends Controller
      * Метод получения списка всех объектов игрового поля.
      *
      * @param GetAnimalsRequest $request Данные запроса.
-     * @param int               $fieldId Игровое поле.
+     * @param int               $fieldId Идентификатор игрового поля.
      *
      * @return Collection
      */
