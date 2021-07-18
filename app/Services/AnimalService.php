@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Animal;
+use App\Models\AnimalType;
 use App\Models\GameField;
-use App\Models\Rabbit;
-use App\Models\Wolf;
+use App\Repositories\AnimalRepository;
 use Exception;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -18,21 +19,16 @@ class AnimalService
      * Метод создания нового животного.
      *
      * @param array $data Данные для создания.
-     *
-     * @throws Exception
      */
     public static function createAnimal(array $data)
     {
-        if ($data['type'] === Wolf::NAME) {
-            $animal = new Wolf();
-        } elseif ($data['type'] === Rabbit::NAME) {
-            $animal = new Rabbit();
-        } else {
-            throw new Exception('Нет такого животного');
-        }
-        unset($data['type']);
-
+        $animal = new Animal();
         DB::transaction(function () use ($animal, $data) {
+            /** @var AnimalType $animalType */
+            $animalType      = AnimalType::query()->where(['name' => $data['type']])->first();
+            $data['type_id'] = $animalType->id;
+            unset($data['type']);
+
             $animal->fill($data);
             $animal->save();
         });
@@ -71,8 +67,6 @@ class AnimalService
      */
     public static function getAnimalList(int $fieldId) : Collection
     {
-        $wolves = Wolf::query()->where('game_field_id', $fieldId)->select(['id', 'x', 'y'])->get()->append(['name']);
-        $rabbits = Rabbit::query()->where('game_field_id', $fieldId)->select(['id', 'x', 'y'])->get()->append(['name']);
-        return $wolves->merge($rabbits);
+        return AnimalRepository::getAnimalListByFieldId($fieldId);
     }
 }
