@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\AddAnimalRequest;
 use App\Services\GameFieldObjectService;
 use Exception;
 use Illuminate\Http\Request;
@@ -16,12 +17,12 @@ class GameFieldObjectController extends Controller
     /**
      * Метод создания объекта игрового поля.
      *
-     * @param Request $request Данные запроса.
-     * @param int     $fieldId Игровое поле.
+     * @param AddAnimalRequest $request Данные запроса.
+     * @param int              $fieldId Игровое поле.
      *
      * @throws Exception
      */
-    public function createObject(Request $request, int $fieldId)
+    public function createObject(AddAnimalRequest $request, int $fieldId)
     {
         $data                  = $request->all();
         $data['game_field_id'] = $fieldId;

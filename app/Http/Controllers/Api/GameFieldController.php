@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateGameRequest;
 use App\Services\GameFieldObjectService;
 use App\Services\GameFieldService;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 
@@ -16,9 +18,9 @@ class GameFieldController extends Controller
     /**
      * Метод создания новой игры.
      *
-     * @param Request $request Данные запроса.
+     * @param CreateGameRequest $request Данные запроса.
      */
-    public function createGameField(Request $request)
+    public function createGameField(CreateGameRequest $request)
     {
         GameFieldService::createGameField($request->all());
     }
@@ -28,6 +30,8 @@ class GameFieldController extends Controller
      *
      * @param Request $request Данные запроса.
      * @param int     $fieldId Игровое поле.
+     *
+     * @throws Exception
      */
     public function executeNextStep(Request $request, int $fieldId)
     {

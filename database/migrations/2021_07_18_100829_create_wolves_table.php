@@ -18,7 +18,7 @@ class CreateWolvesTable extends Migration
     {
         Schema::create('wolves', function (Blueprint $table) {
             $table->id();
-            $table->unsignedInteger('object_id')->comment('Идентификатор объекта на игровом поле');
+            $table->unsignedInteger('object_id')->comment('Идентификатор объекта на игровом поле')->unique();
             $table->tinyInteger('is_hungry')->default(1)->comment('Голоден ли волк?');
 
             $table->foreign('object_id')->references('id')->on('game_field_objects')->onDelete('cascade');
