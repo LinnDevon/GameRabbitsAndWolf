@@ -3,8 +3,10 @@
 namespace App\Services;
 
 use App\Models\Animal;
+use App\Models\AnimalType;
 use App\Models\GameField;
 use Exception;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -35,14 +37,44 @@ class GameFieldService
      */
     public static function executeNextStep(int $fieldId)
     {
-        /** @var Animal[] $animals */
-        $animals = GameField::find($fieldId)->animals;
+        /** @var GameField $gameField */
+        $gameField = GameField::find($fieldId);
+        if ($gameField->count_steps === 0) {
+            throw new Exception('Больше ходов не осталось. Игра завершена.');
+        }
 
+        /** @var Collection|Animal[] $animals */
+        $animals = $gameField->animals;
         DB::transaction(function () use ($animals) {
             foreach ($animals as $animal) {
                 $animal->moveRandomStep();
                 $animal->save();
             }
+
+            /** @var Collection|Animal[] $wolfs */
+            $wolfs = $animals->where('type_id', AnimalType::TYPE_WOLF_ID);
+            /** @var Collection|Animal[] $rabbits */
+            $rabbits = $animals->where('type_id', AnimalType::TYPE_RABBIT_ID);
+
+            $deadAnimalIds = [];
+            foreach ($wolfs as $wolf) {
+                $neighborIds = [];
+                foreach ($rabbits as $rabbit) {
+                    if ($rabbit->isThisCell($wolf->x, $wolf->y)) {
+                        $deadAnimalIds[] = $rabbit->id;
+                    }
+
+                    if ($rabbit->isNeighboringCell($wolf->x, $wolf->y)) {
+                        $neighborIds[] = $rabbit->id;
+                    }
+                }
+
+                if (count($neighborIds) === 1) {
+                    $deadAnimalIds = array_merge($deadAnimalIds, $neighborIds);
+                }
+            }
+
+            Animal::destroy($deadAnimalIds);
         });
     }
 }

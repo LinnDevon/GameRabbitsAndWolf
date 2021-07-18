@@ -69,19 +69,4 @@ class AnimalService
     {
         return AnimalRepository::getAnimalListByFieldId($fieldId);
     }
-
-    /**
-     * Метод обновления координат животных.
-     *
-     * @param int $x        Координата x.
-     * @param int $y        Координата y.
-     * @param int $animalId Идентификатор животного.
-     */
-    public static function updateCoordinates(int $x, int $y, int $animalId)
-    {
-        $animal = Animal::find($animalId);
-        $animal->x = $x;
-        $animal->y = $y;
-        $animal->save();
-    }
 }

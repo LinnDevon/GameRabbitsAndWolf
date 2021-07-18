@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\AnimalType;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -22,8 +23,8 @@ class CreateAnimalTypesTable extends Migration
         });
 
         // Заполняем таблицу
-        DB::table('animal_types')->insert(['name' => 'Заяц']);
-        DB::table('animal_types')->insert(['name' => 'Волк']);
+        DB::table('animal_types')->insert(['id' => AnimalType::TYPE_RABBIT_ID, 'name' => 'Заяц']);
+        DB::table('animal_types')->insert(['id' => AnimalType::TYPE_WOLF_ID, 'name' => 'Волк']);
 
         DB::select(DB::raw("COMMENT ON TABLE animal_types IS 'Таблица типов животных'"));
     }

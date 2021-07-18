@@ -15,6 +15,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class AnimalType extends Model
 {
+    public const TYPE_RABBIT_ID = 1;
+    public const TYPE_WOLF_ID = 2;
+
     /**
      * Получить животных.
      *

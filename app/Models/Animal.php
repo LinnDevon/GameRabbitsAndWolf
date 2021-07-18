@@ -157,4 +157,30 @@ class Animal extends Model
 
         return false;
     }
+
+    /**
+     * Проверяет, сидят ли животные на соседних клетках.
+     *
+     * @param int $x Координата x второго животного.
+     * @param int $y Координата y второго животного.
+     *
+     * @return bool
+     */
+    public function isNeighboringCell(int $x, int $y) : bool
+    {
+        return abs($this->x - $x) + abs($this->y - $y) === 1;
+    }
+
+    /**
+     * Проверяет, сидят ли животные на одной и той же клетке.
+     *
+     * @param int $x Координата x второго животного.
+     * @param int $y Координата y второго животного.
+     *
+     * @return bool
+     */
+    public function isThisCell(int $x, int $y) : bool
+    {
+        return abs($this->x - $x) + abs($this->y - $y) === 0;
+    }
 }
