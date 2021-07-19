@@ -23,8 +23,8 @@ class CreateObjectTypesTable extends Migration
         });
 
         // Заполняем таблицу
-        DB::table('object_types')->insert(['id' => ObjectType::TYPE_RABBIT_ID, 'name' => 'Заяц']);
-        DB::table('object_types')->insert(['id' => ObjectType::TYPE_WOLF_ID, 'name' => 'Волк']);
+        DB::table('object_types')->insert(['id' => ObjectType::TYPE_RABBIT_ID, 'name' => 'заяц']);
+        DB::table('object_types')->insert(['id' => ObjectType::TYPE_WOLF_ID, 'name' => 'волк']);
 
         DB::select(DB::raw("COMMENT ON TABLE object_types IS 'Таблица типов объектов игрового поля'"));
     }
