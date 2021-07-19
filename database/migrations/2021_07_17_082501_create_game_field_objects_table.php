@@ -24,7 +24,7 @@ class CreateGameFieldObjectsTable extends Migration
             $table->unsignedInteger('game_field_id')->comment('Идентификатор игрового поля');
 
             $table->foreign('type_id')->references('id')->on('object_types');
-            $table->foreign('game_field_id')->references('id')->on('game_fields');
+            $table->foreign('game_field_id')->references('id')->on('game_fields')->onDelete('cascade');
         });
 
         DB::select(DB::raw("COMMENT ON TABLE game_field_objects IS 'Таблица объектов игрового поля'"));
